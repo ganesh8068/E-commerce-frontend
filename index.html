@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopEasy - Your Online Store</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+    />
+    <style>
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      @media (max-width: 640px) {
+        .product-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          gap: 1rem;
+        }
+      }
+
+      body.dark {
+        background-color: #1a202c;
+        color: #cbd5e0;
+      }
+      body.dark .bg-white {
+        background-color: #2d3748;
+      }
+      body.dark .text-gray-700 {
+        color: #a0aec0;
+      }
+      body.dark .text-gray-500 {
+        color: #718096;
+      }
+      body.dark .border-gray-200 {
+        border-color: #4a5568;
+      }
+      .category-card {
+        transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .category-card:hover {
+        background-color: #10b981; /* Emerald green */
+        color: white; /* Change text color to white */
+        transform: scale(1.05); /* Slightly enlarge the card */
+      }
+
+      .category-card:hover i {
+        color: white; /* Change icon color to white */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <a
+          href="index.html"
+          class="text-3xl font-extrabold text-gradient bg-gradient-to-r from-emerald-500 to-teal-400"
+          >ShopEasy</a
+        >
+        <div class="flex items-center space-x-4">
+          <!-- Search Bar -->
+          <div class="relative">
+            <input
+              type="text"
+              id="search-bar"
+              placeholder="Search products..."
+              class="border rounded-md px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            <button
+              id="search-button"
+              class="absolute right-2 top-2 text-emerald-600 hover:text-emerald-700"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <!-- Dark Mode Toggle -->
+          <button
+            id="dark-mode-toggle"
+            class="p-2 text-gray-700 hover:text-emerald-600 transition"
+          >
+            <i class="fas fa-moon"></i>
+          </button>
+          <!-- Cart Button -->
+          <div class="relative group">
+            <button
+              id="cart-button"
+              class="p-2 text-gray-700 hover:text-emerald-600 transition"
+            >
+              <i class="fas fa-shopping-cart"></i>
+              <span
+                id="cart-count"
+                class="absolute -top-1 -right-1 bg-emerald-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                >0</span
+              >
+            </button>
+            <div
+              id="cart-dropdown"
+              class="hidden absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg z-10 p-4"
+            >
+              <h3 class="text-lg font-semibold mb-2">Your Cart</h3>
+              <div id="cart-items" class="max-h-64 overflow-y-auto">
+                <!-- Cart items will be added here -->
+                <p id="empty-cart-message" class="text-gray-500">
+                  Your cart is empty
+                </p>
+              </div>
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex justify-between font-semibold">
+                  <span>Total:</span>
+                  <span id="cart-total">$0.00</span>
+                </div>
+                <button
+                  id="checkout-button"
+                  class="mt-3 w-full bg-gradient-to-r from-emerald-500 to-teal-400 text-white py-2 px-4 rounded-md hover:from-emerald-600 hover:to-teal-500 transition"
+                >
+                  Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+      <!-- Hero Section -->
+      <section class="mb-12" data-aos="fade-up">
+        <div
+          class="bg-gradient-to-r from-emerald-500 to-emerald-400 text-white rounded-lg p-8 md:p-12 shadow-lg"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <!-- Text Content -->
+            <div>
+              <h1 class="text-4xl md:text-5xl font-extrabold mb-4">
+                Welcome to ShopEasy
+              </h1>
+              <p class="text-lg mb-6">
+                Discover amazing products at unbeatable prices. Shop now and
+                experience the best deals!
+              </p>
+              <button
+                id="shop-now-button"
+                class="bg-white text-emerald-600 py-3 px-8 rounded-md font-semibold hover:bg-gray-100 transition shadow-md"
+              >
+                Shop Now
+              </button>
+            </div>
+            <!-- Image Content -->
+            <div>
+              <img
+                src="./assest/banner1.png"
+                alt="Shopping Illustration"
+                class="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Categories Section -->
+      <section class="mb-12" data-aos="fade-right">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
+          Categories
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="electronics"
+          >
+            <i class="fas fa-laptop text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Electronics</h3>
+            <p class="text-gray-500 mt-2">
+              Discover the latest gadgets and devices.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="clothing"
+          >
+            <i class="fas fa-tshirt text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Clothing</h3>
+            <p class="text-gray-500 mt-2">
+              Trendy and comfortable apparel for all.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="home"
+          >
+            <i class="fas fa-home text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Home & Kitchen</h3>
+            <p class="text-gray-500 mt-2">
+              Essentials to make your house a home.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="beauty"
+          >
+            <i class="fas fa-spa text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Beauty</h3>
+            <p class="text-gray-500 mt-2">
+              Skincare and beauty products for all.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="sports"
+          >
+            <i class="fas fa-football-ball text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Sports</h3>
+            <p class="text-gray-500 mt-2">
+              Gear and equipment for all sports enthusiasts.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="books"
+          >
+            <i class="fas fa-book text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Books</h3>
+            <p class="text-gray-500 mt-2">
+              Explore a wide range of books and novels.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="toys"
+          >
+            <i class="fas fa-puzzle-piece text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">Toys</h3>
+            <p class="text-gray-500 mt-2">
+              Fun and educational toys for kids of all ages.
+            </p>
+          </div>
+          <div
+            class="category-card bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition transform hover:scale-105"
+            data-category="all"
+          >
+            <i class="fas fa-th-large text-4xl text-emerald-600 mb-3"></i>
+            <h3 class="font-semibold text-lg">All Categories</h3>
+            <p class="text-gray-500 mt-2">View all products.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Products Section -->
+      <section data-aos="fade-up">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-3xl font-bold text-gray-800">Featured Products</h2>
+          <div class="flex items-center">
+            <label for="sort-select" class="mr-2 text-gray-600">Sort by:</label>
+            <select id="sort-select" class="border rounded-md px-2 py-1">
+              <option value="default">Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+        <div id="products-container" class="product-grid">
+          <!-- Example Product Card -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-105"
+            data-aos="fade-up"
+          >
+            <img
+              src="/placeholder.svg?height=300&width=300"
+              alt="Product"
+              class="w-full h-48 object-cover rounded-md mb-4"
+            />
+            <h3 class="font-semibold text-lg">Wireless Bluetooth Headphones</h3>
+            <p class="text-gray-500 mt-2">$79.99</p>
+            <button
+              class="mt-4 w-full bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 transition"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </section>
+      <br />
+      <br />
+
+      <!-- Reviews Section -->
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
+          Customer Reviews
+        </h2>
+        <p class="text-gray-600 text-center mb-8">
+          See what our customers are saying about us!
+        </p>
+        <div
+          class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          <div
+            class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition transform hover:scale-105"
+          >
+            <div class="mb-4">
+              <i class="fas fa-user-circle text-5xl text-emerald-600"></i>
+            </div>
+            <p class="text-gray-600 italic mb-4">
+              "Amazing products and fast delivery! Highly recommend ShopEasy."
+            </p>
+            <div class="flex justify-center mb-2">
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+            </div>
+            <h4 class="font-semibold">- John Doe</h4>
+          </div>
+          <div
+            class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition transform hover:scale-105"
+          >
+            <div class="mb-4">
+              <i class="fas fa-user-circle text-5xl text-emerald-600"></i>
+            </div>
+            <p class="text-gray-600 italic mb-4">
+              "Great customer service and quality products. Will shop again!"
+            </p>
+            <div class="flex justify-center mb-2">
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star-half-alt text-emerald-500"></i>
+            </div>
+            <h4 class="font-semibold">- Jane Smith</h4>
+          </div>
+          <div
+            class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition transform hover:scale-105"
+          >
+            <div class="mb-4">
+              <i class="fas fa-user-circle text-5xl text-emerald-600"></i>
+            </div>
+            <p class="text-gray-600 italic mb-4">
+              "Affordable prices and a wide range of products. Love it!"
+            </p>
+            <div class="flex justify-center mb-2">
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+              <i class="fas fa-star text-emerald-500"></i>
+            </div>
+            <h4 class="font-semibold">- Emily Brown</h4>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Us Section -->
+      <section class="bg-gray-100 py-12">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
+            Contact Us
+          </h2>
+          <p class="text-gray-600 text-center mb-8">
+            Have questions or need help? Feel free to reach out to us!
+          </p>
+          <form
+            id="contact-form"
+            class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg"
+          >
+            <div class="mb-6">
+              <label for="name" class="block text-gray-700 font-semibold mb-2"
+                >Your Name</label
+              >
+              <input
+                type="text"
+                id="name"
+                class="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
+            <div class="mb-6">
+              <label for="email" class="block text-gray-700 font-semibold mb-2"
+                >Your Email</label
+              >
+              <input
+                type="email"
+                id="email"
+                class="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div class="mb-6">
+              <label
+                for="message"
+                class="block text-gray-700 font-semibold mb-2"
+                >Your Message</label
+              >
+              <textarea
+                id="message"
+                class="w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                rows="5"
+                placeholder="Enter your message"
+                required
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-gradient-to-r from-emerald-500 to-teal-400 text-white py-3 px-4 rounded-md font-semibold hover:from-emerald-600 hover:to-teal-500 transition"
+            >
+              Send Message
+            </button>
+          </form>
+          <div class="mt-8 text-center">
+            <p class="text-gray-600">
+              You can also reach us at
+              <a
+                href="mailto:support@shopeasy.com"
+                class="text-emerald-600 hover:underline"
+                >support@shopeasy.com</a
+              >
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div
+      id="product-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-4">
+            <h2 id="modal-product-title" class="text-2xl font-bold"></h2>
+            <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <img
+                id="modal-product-image"
+                src="/placeholder.svg"
+                alt="Product"
+                class="w-full h-auto rounded-lg"
+              />
+            </div>
+            <div>
+              <p id="modal-product-description" class="text-gray-600 mb-4"></p>
+              <div class="mb-4">
+                <span
+                  class="text-2xl font-bold text-emerald-600"
+                  id="modal-product-price"
+                ></span>
+              </div>
+              <div class="mb-6">
+                <label for="modal-quantity" class="block text-gray-700 mb-2"
+                  >Quantity:</label
+                >
+                <div class="flex items-center">
+                  <button
+                    id="decrease-quantity"
+                    class="bg-gray-200 px-3 py-1 rounded-l-md"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    id="modal-quantity"
+                    value="1"
+                    min="1"
+                    class="w-16 text-center border-y py-1"
+                  />
+                  <button
+                    id="increase-quantity"
+                    class="bg-gray-200 px-3 py-1 rounded-r-md"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <button
+                id="add-to-cart-modal"
+                class="w-full bg-emerald-600 text-white py-3 px-4 rounded-md hover:bg-emerald-700 transition"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div
+      id="checkout-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-4">
+            <h2 class="text-2xl font-bold">Checkout</h2>
+            <button
+              id="close-checkout"
+              class="text-gray-500 hover:text-gray-700"
+            >
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <div id="checkout-steps">
+            <!-- Step 1: Shipping Information -->
+            <div id="shipping-step" class="checkout-step">
+              <h3 class="text-xl font-semibold mb-4">Shipping Information</h3>
+              <form id="shipping-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="first-name" class="block text-gray-700 mb-1"
+                      >First Name</label
+                    >
+                    <input
+                      type="text"
+                      id="first-name"
+                      class="w-full border rounded-md px-3 py-2"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="last-name" class="block text-gray-700 mb-1"
+                      >Last Name</label
+                    >
+                    <input
+                      type="text"
+                      id="last-name"
+                      class="w-full border rounded-md px-3 py-2"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label for="email" class="block text-gray-700 mb-1"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    id="email"
+                    class="w-full border rounded-md px-3 py-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="address" class="block text-gray-700 mb-1"
+                    >Address</label
+                  >
+                  <input
+                    type="text"
+                    id="address"
+                    class="w-full border rounded-md px-3 py-2"
+                    required
+                  />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label for="city" class="block text-gray-700 mb-1"
+                      >City</label
+                    >
+                    <input
+                      type="text"
+                      id="city"
+                      class="w-full border rounded-md px-3 py-2"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="state" class="block text-gray-700 mb-1"
+                      >State</label
+                    >
+                    <input
+                      type="text"
+                      id="state"
+                      class="w-full border rounded-md px-3 py-2"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="zip" class="block text-gray-700 mb-1"
+                      >ZIP Code</label
+                    >
+                    <input
+                      type="text"
+                      id="zip"
+                      class="w-full border rounded-md px-3 py-2"
+                      required
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="w-full bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 transition"
+                >
+                  Continue to Payment
+                </button>
+              </form>
+            </div>
+
+            <!-- Step 2: Payment Information -->
+            <div id="payment-step" class="checkout-step hidden">
+              <h3 class="text-xl font-semibold mb-4">Payment Information</h3>
+              <form id="payment-form" class="space-y-4">
+                <div>
+                  <label for="card-number" class="block text-gray-700 mb-1"
+                    >Card Number</label
+                  >
+                  <input
+                    type="text"
+                    id="card-number"
+                    class="w-full border rounded-md px-3 py-2"
+                    placeholder="1234 5678 9012 3456"
+                    required
+                  />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label for="expiry" class="block text-gray-700 mb-1"
+                      >Expiry Date</label
+                    >
+                    <input
+                      type="text"
+                      id="expiry"
+                      class="w-full border rounded-md px-3 py-2"
+                      placeholder="MM/YY"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="cvv" class="block text-gray-700 mb-1"
+                      >CVV</label
+                    >
+                    <input
+                      type="text"
+                      id="cvv"
+                      class="w-full border rounded-md px-3 py-2"
+                      placeholder="123"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label for="name-on-card" class="block text-gray-700 mb-1"
+                    >Name on Card</label
+                  >
+                  <input
+                    type="text"
+                    id="name-on-card"
+                    class="w-full border rounded-md px-3 py-2"
+                    required
+                  />
+                </div>
+                <div class="pt-4 border-t border-gray-200">
+                  <div class="flex justify-between font-semibold mb-2">
+                    <span>Subtotal:</span>
+                    <span id="checkout-subtotal">$0.00</span>
+                  </div>
+                  <div class="flex justify-between mb-2">
+                    <span>Shipping:</span>
+                    <span id="checkout-shipping">$5.99</span>
+                  </div>
+                  <div
+                    class="flex justify-between font-bold text-lg pt-2 border-t border-gray-200"
+                  >
+                    <span>Total:</span>
+                    <span id="checkout-total">$0.00</span>
+                  </div>
+                </div>
+                <div class="flex space-x-4">
+                  <button
+                    type="button"
+                    id="back-to-shipping"
+                    class="w-1/2 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition"
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    class="w-1/2 bg-emerald-600 text-white py-2 px-4 rounded-md hover:bg-emerald-700 transition"
+                  >
+                    Place Order
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Step 3: Order Confirmation -->
+            <div id="confirmation-step" class="checkout-step hidden">
+              <div class="text-center py-8">
+                <div
+                  class="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-4"
+                >
+                  <i class="fas fa-check text-2xl text-emerald-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">
+                  Thank You for Your Order!
+                </h3>
+                <p class="text-gray-600 mb-6">
+                  Your order has been placed successfully.
+                </p>
+                <p class="mb-2">
+                  Order Number:
+                  <span id="order-number" class="font-semibold"></span>
+                </p>
+                <p class="mb-6">
+                  A confirmation email has been sent to
+                  <span id="confirmation-email" class="font-semibold"></span>
+                </p>
+                <button
+                  id="continue-shopping"
+                  class="bg-emerald-600 text-white py-2 px-6 rounded-md hover:bg-emerald-700 transition"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold text-white mb-4">ShopEasy</h3>
+            <p>Your one-stop shop for all your needs.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition">Home</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition"
+                  >Products</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-4">Customer Service</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition">FAQ</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition"
+                  >Shipping Policy</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition"
+                  >Returns & Refunds</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-emerald-400 transition"
+                  >Privacy Policy</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-4">Connect With Us</h4>
+            <div class="flex space-x-4 mb-4">
+              <a href="#" class="hover:text-emerald-400 transition"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="hover:text-emerald-400 transition"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="hover:text-emerald-400 transition"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="hover:text-emerald-400 transition"
+                ><i class="fab fa-pinterest"></i
+              ></a>
+            </div>
+            <p>Subscribe to our newsletter</p>
+            <div class="flex mt-2">
+              <input
+                type="email"
+                placeholder="Your email"
+                class="px-3 py-2 rounded-l-md w-full"
+              />
+              <button
+                class="bg-gradient-to-r from-emerald-500 to-teal-400 text-white px-4 py-2 rounded-r-md hover:from-emerald-600 hover:to-teal-500 transition"
+              >
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+          <p>&copy; 2025 ShopEasy. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 1000, // Animation duration in milliseconds
+        once: true, // Whether animation should happen only once
+      });
+    </script>
+  </body>
+</html>
+
