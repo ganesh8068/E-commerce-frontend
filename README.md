@@ -63,10 +63,13 @@ Welcome to **ShopEasy**, your one-stop shop for all your needs! This project is 
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/shopeasy.git
-
+   
+2. move to main file:
+   ```bash
    cd shopeasy
 
-   E-commerce frontend/
+   
+##
 ├── [index.html](http://_vscodecontentref_/0)          # Main HTML file
 ├── style.css           # Custom CSS styles
 ├── [script.js](http://_vscodecontentref_/1)           # JavaScript functionality
