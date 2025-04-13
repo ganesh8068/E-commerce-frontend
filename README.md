@@ -2,6 +2,8 @@
 
 Welcome to **ShopEasy**, your one-stop shop for all your needs! This project is a fully responsive e-commerce frontend built with HTML, CSS, and JavaScript. It features a modern design, interactive product catalog, category filtering, shopping cart functionality, and a smooth checkout process.
 
+[Website link](https://ganesh8068.github.io/E-commerce-frontend/)
+
 ---
 
 ## Features
